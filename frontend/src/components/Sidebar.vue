@@ -1,5 +1,12 @@
 <template>
-  <div class="sidebar">
+  <div :class="['sidebar', { open: isSidebarOpen }]">
+    <!-- Close button for mobile -->
+    <button @click="closeSidebar" class="close-btn" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
     <div class="sidebar-header">
       <div class="brand">
         <div class="brand-icon">
@@ -14,7 +21,7 @@
     <div class="sidebar-menu">
       <h3 class="menu-title">MAIN MENU</h3>
 
-      <router-link to="/" class="menu-item" :class="{ active: $route.path === '/' }">
+      <router-link to="/" class="menu-item" :class="{ active: $route.path === '/' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="7" height="7" rx="1"/>
           <rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -24,7 +31,7 @@
         <span>Dashboard</span>
       </router-link>
 
-      <router-link to="/schedule" class="menu-item" :class="{ active: $route.path === '/schedule' }">
+      <router-link to="/schedule" class="menu-item" :class="{ active: $route.path === '/schedule' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
           <line x1="16" y1="2" x2="16" y2="6"/>
@@ -34,7 +41,7 @@
         <span>Schedule</span>
       </router-link>
 
-      <router-link to="/tasks" class="menu-item" :class="{ active: $route.path === '/tasks' }">
+      <router-link to="/tasks" class="menu-item" :class="{ active: $route.path === '/tasks' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 11l3 3L22 4"/>
           <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
@@ -43,7 +50,7 @@
         <span class="badge-count">3</span>
       </router-link>
 
-      <router-link v-if="authStore.isAdmin" to="/users" class="menu-item" :class="{ active: $route.path === '/users' }">
+      <router-link v-if="authStore.isAdmin" to="/users" class="menu-item" :class="{ active: $route.path === '/users' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
           <circle cx="9" cy="7" r="4"/>
@@ -54,7 +61,7 @@
         <span class="badge-count">{{ userStats?.total_users || 0 }}</span>
       </router-link>
 
-      <router-link to="/reports" class="menu-item" :class="{ active: $route.path === '/reports' }">
+      <router-link to="/reports" class="menu-item" :class="{ active: $route.path === '/reports' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="20" x2="18" y2="10"/>
           <line x1="12" y1="20" x2="12" y2="4"/>
@@ -65,7 +72,7 @@
 
       <h3 class="menu-title">SETTINGS</h3>
 
-      <router-link to="/products" class="menu-item" :class="{ active: $route.path === '/products' }">
+      <router-link to="/products" class="menu-item" :class="{ active: $route.path === '/products' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
           <line x1="7" y1="7" x2="7.01" y2="7"/>
@@ -73,7 +80,7 @@
         <span>Products</span>
       </router-link>
 
-      <router-link to="/chat" class="menu-item" :class="{ active: $route.path === '/chat' }">
+      <router-link to="/chat" class="menu-item" :class="{ active: $route.path === '/chat' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
         </svg>
@@ -81,7 +88,7 @@
         <span class="badge-count notification">2</span>
       </router-link>
 
-      <router-link to="/notes" class="menu-item" :class="{ active: $route.path === '/notes' }">
+      <router-link to="/notes" class="menu-item" :class="{ active: $route.path === '/notes' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
@@ -93,7 +100,7 @@
         <span class="badge-count notification">5</span>
       </router-link>
 
-      <router-link to="/settings" class="menu-item" :class="{ active: $route.path === '/settings' }">
+      <router-link to="/settings" class="menu-item" :class="{ active: $route.path === '/settings' }" @click="handleMenuClick">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
           <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
@@ -120,15 +127,24 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/users'
+import { useSidebar } from '@/composables/useSidebar'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const userStats = ref(null)
+const { isSidebarOpen, closeSidebar } = useSidebar()
 
 const handleLogout = async () => {
   await authStore.logout()
   router.push('/login')
+}
+
+const handleMenuClick = () => {
+  // Close sidebar on mobile when a menu item is clicked
+  if (window.innerWidth <= 1024) {
+    closeSidebar()
+  }
 }
 
 onMounted(async () => {
@@ -157,6 +173,36 @@ onMounted(async () => {
   top: 0;
   z-index: 100;
   overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close-btn {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  z-index: 101;
+}
+
+.close-btn:hover {
+  background: var(--danger-color);
+  color: white;
+}
+
+.close-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .sidebar-header {
@@ -306,5 +352,23 @@ onMounted(async () => {
 
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .close-btn {
+    display: flex;
+  }
 }
 </style>

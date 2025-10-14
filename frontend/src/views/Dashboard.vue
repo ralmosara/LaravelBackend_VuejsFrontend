@@ -1,18 +1,117 @@
 <template>
-  <div class="container">
-    <div class="dashboard">
-      <!-- Header -->
-      <div class="dashboard-header-tabs">
-        <button :class="['tab', { active: activeTab === 'overview' }]" @click="activeTab = 'overview'">
-          Overview
-        </button>
-        <button :class="['tab', { active: activeTab === 'activity' }]" @click="activeTab = 'activity'">
-          Activity
-        </button>
-        <button :class="['tab', { active: activeTab === 'all' }]" @click="activeTab = 'all'">
-          All Time
+  <div class="dashboard">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-subtitle">Welcome back, {{ authStore.user?.name }}! Here's what's happening today.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          Download Report
         </button>
       </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total Users</p>
+          <h3 class="stat-value">{{ userStats?.total_users || 0 }}</h3>
+          <p class="stat-change positive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+            12% increase
+          </p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+            <line x1="7" y1="7" x2="7.01" y2="7"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total Products</p>
+          <h3 class="stat-value">{{ stats.products }}</h3>
+          <p class="stat-change positive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+            8% increase
+          </p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Active Orders</p>
+          <h3 class="stat-value">{{ stats.orders }}</h3>
+          <p class="stat-change negative">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+              <polyline points="17 18 23 18 23 12"/>
+            </svg>
+            3% decrease
+          </p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Revenue</p>
+          <h3 class="stat-value">$45,231</h3>
+          <p class="stat-change positive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+            18% increase
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="dashboard-tabs">
+      <button :class="['tab-btn', { active: activeTab === 'overview' }]" @click="activeTab = 'overview'">
+        Overview
+      </button>
+      <button :class="['tab-btn', { active: activeTab === 'activity' }]" @click="activeTab = 'activity'">
+        Activity
+      </button>
+      <button :class="['tab-btn', { active: activeTab === 'all' }]" @click="activeTab = 'all'">
+        All Time
+      </button>
+    </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="loading">
@@ -68,7 +167,7 @@
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
                   </svg>
-                  {{ getUserTime(user) }}
+                  {{ getUserTime() }}
                 </span>
               </div>
               <div class="performer-badges">
@@ -123,7 +222,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -131,7 +229,6 @@
 import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/users'
-import api from '@/services/api'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
@@ -140,6 +237,13 @@ const loading = ref(true)
 const activeTab = ref('overview')
 const allUsers = ref([])
 const topUsers = computed(() => allUsers.value.slice(0, 3))
+const userStats = ref(null)
+
+const stats = ref({
+  products: 156,
+  orders: 89,
+  revenue: 45231
+})
 
 // Helper functions for user data
 const getUserScore = (user) => {
@@ -153,7 +257,7 @@ const getUserActivity = (user) => {
   return 5 + user.id * 2
 }
 
-const getUserTime = (user) => {
+const getUserTime = () => {
   const days = Math.floor(Math.random() * 30) + 1
   return `${days} days streak`
 }
@@ -194,6 +298,12 @@ onMounted(async () => {
         getUserScore(b) - getUserScore(a)
       )
     }
+
+    // Fetch user statistics if admin
+    if (authStore.isAdmin) {
+      await userStore.fetchStatistics()
+      userStats.value = userStore.statistics
+    }
   } catch (error) {
     console.error('Failed to fetch dashboard data:', error)
   } finally {
@@ -204,35 +314,197 @@ onMounted(async () => {
 
 <style scoped>
 .dashboard {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: 100%;
+  animation: fadeIn 0.3s ease-out;
 }
 
-/* Header Tabs */
-.dashboard-header-tabs {
+/* Page Header */
+.page-header {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid #f0f0f0;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  animation: slideIn 0.3s ease-out;
 }
 
-.dashboard-header-tabs .tab {
-  padding: 1rem 0;
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 2px solid var(--border-medium);
+  background: white;
+  border-radius: var(--radius-lg);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-outline:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-base);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.stat-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.stat-icon.primary {
+  background: rgba(30, 64, 175, 0.1);
+  color: var(--primary-color);
+}
+
+.stat-icon.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.stat-icon.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.stat-icon.purple {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--accent-purple);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.stat-change {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.stat-change svg {
+  width: 16px;
+  height: 16px;
+}
+
+.stat-change.positive {
+  color: var(--success-color);
+}
+
+.stat-change.negative {
+  color: var(--danger-color);
+}
+
+/* Tabs */
+.dashboard-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  padding: 0.875rem 1.5rem;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--text-tertiary);
   font-weight: 600;
   font-size: 0.9375rem;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
-  transition: all 0.3s;
+  transition: all var(--transition-base);
 }
 
-.dashboard-header-tabs .tab.active {
-  color: #1e293b;
-  border-bottom-color: #6366f1;
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
 }
 
 /* Motivational Banner */
@@ -580,7 +852,22 @@ onMounted(async () => {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 1024px) {
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .top-performers {
     grid-template-columns: 1fr;
   }
@@ -596,6 +883,14 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
   .leaderboard-tabs,
   .table-row {
     grid-template-columns: 60px 1fr 1fr;
@@ -605,6 +900,20 @@ onMounted(async () => {
   .col-status,
   .col-bonus {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn-outline span {
+    display: none;
+  }
+
+  .motivational-banner {
+    padding: 1.5rem;
+  }
+
+  .banner-content h1 {
+    font-size: 1.5rem;
   }
 }
 </style>
