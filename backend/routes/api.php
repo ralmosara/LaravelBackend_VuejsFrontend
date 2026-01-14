@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products/low-stock', [ProductController::class, 'lowStock']);
     Route::patch('/products/{id}/stock', [ProductController::class, 'updateStock']);
     Route::apiResource('products', ProductController::class);
+
+    // Schedule routes
+    Route::apiResource('schedules', App\Http\Controllers\Api\ScheduleController::class);
 });
 
 // Admin only routes
