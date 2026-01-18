@@ -28,6 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Schedule routes
     Route::apiResource('schedules', App\Http\Controllers\Api\ScheduleController::class);
+
+    // Task routes
+    Route::apiResource('tasks', App\Http\Controllers\Api\TaskController::class);
 });
 
 // Admin only routes
